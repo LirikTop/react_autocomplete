@@ -1,6 +1,6 @@
 import React, {
   useCallback,
-  // useEffect,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -17,16 +17,24 @@ export const App: React.FC = () => {
   const [applieQuery, setApplieQuery] = useState<string>('');
   const [selected, setSelected] = useState<Person | null>(null);
 
+  const chackSelected = () => {
+    if (selected) {
+      return `${selected.name} ${selected.born} - ${selected.died}`;
+    }
+
+    return 'No selected person';
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const applyQuery = useCallback(debounce(setApplieQuery, 300), []);
 
   // const timerId = useRef(0);
   const field = useRef<HTMLInputElement>(null);
 
-  // useEffect(() => {
-  //   field.current?.focus();
-  //   setActive(Boolean(applieQuery.trim()));
-  // }, [applieQuery]);
+  useEffect(() => {
+    field.current?.focus();
+    setActive(true);
+  }, []);
 
   function handleInputValue(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -46,7 +54,7 @@ export const App: React.FC = () => {
   const filterPeople = useMemo(() => {
     return (
       peopleFromServer.filter(person =>
-        person.name.toLowerCase().includes(applieQuery.toLowerCase()),
+        person.name.toLowerCase().includes(applieQuery.trim().toLowerCase()),
       ) || null
     );
   }, [applieQuery]);
@@ -73,7 +81,7 @@ export const App: React.FC = () => {
   return (
     <div className="container">
       <main className="section is-flex is-flex-direction-column">
-        {selected ? (
+        {/* {selected ? (
           <h1 className="title" data-cy="title">
             {selected.name} {selected.born} - {selected.died}
           </h1>
@@ -81,7 +89,11 @@ export const App: React.FC = () => {
           <h1 className="title" data-cy="title">
             No selected person
           </h1>
-        )}
+        )} */}
+
+        <h1 className="title" data-cy="title">
+          {chackSelected()}
+        </h1>
 
         <div className="dropdown is-active">
           <div className="dropdown-trigger">
@@ -93,7 +105,7 @@ export const App: React.FC = () => {
               data-cy="search-input"
               value={query}
               onChange={e => handleInputValue(e)}
-              onFocus={() => setActive(true)}
+              // onFocus={() => setActive(true)}
               // onClick={() => setActive(carrent => !carrent)}
               // onBlur={() => setActive(false)}
             />
